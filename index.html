@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semáforo de Riesgo Estructural de los Cuidados</title>
+
+  <style>
+    :root {
+      --green: #1f8f5f;
+      --green-soft: #e8f6ef;
+      --amber: #d99024;
+      --amber-soft: #fff3dc;
+      --red: #c73535;
+      --red-soft: #fdeaea;
+
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d9e2ec;
+      --bg: #f6f8fb;
+
+      --shadow: 0 18px 45px rgba(31, 41, 51, 0.09);
+      --shadow-soft: 0 10px 28px rgba(31, 41, 51, 0.07);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --transition: 220ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(31, 143, 95, 0.11), transparent 32rem),
+        radial-gradient(circle at top right, rgba(199, 53, 53, 0.08), transparent 30rem),
+        linear-gradient(180deg, #f9fbfd 0%, var(--bg) 48%, #f2f5f9 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 56px;
+      position: relative;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 28px;
+      padding-top: 6px;
+    }
+
+    .hero-card,
+    .method-card,
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(217, 226, 236, 0.92);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-card {
+      padding: 34px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 999px;
+      right: -90px;
+      top: -90px;
+      background: conic-gradient(from 160deg, var(--green), var(--amber), var(--red), var(--green));
+      opacity: 0.12;
+      z-index: -1;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: auto 34px 0 34px;
+      height: 4px;
+      border-radius: 999px 999px 0 0;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+      opacity: 0.75;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: #fff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+      margin: 0 0 18px;
+      max-width: 900px;
+    }
+
+    .hero-card p {
+      font-size: 1.08rem;
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0;
+    }
+
+    .method-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .method-card h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .method-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .method-note {
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: #f8fafc;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 24px;
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+    }
+
+    .panel:hover {
+      box-shadow: 0 20px 48px rgba(31, 41, 51, 0.11);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h2,
+    .panel-title h3 {
+      margin: 0;
+      font-size: 1.22rem;
+      letter-spacing: -0.025em;
+    }
+
+    .small-label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .traffic-card {
+      position: sticky;
+      top: 20px;
+      overflow: hidden;
+    }
+
+    .traffic-visual {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .traffic-light {
+      width: 112px;
+      padding: 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #1f2b38, #111922);
+      display: grid;
+      gap: 13px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 18px 32px rgba(0,0,0,0.18);
+    }
+
+    .light {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      opacity: 0.22;
+      transform: scale(0.9);
+      transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
+      border: 3px solid rgba(255,255,255,0.22);
+    }
+
+    .light.green {
+      background: var(--green);
+    }
+
+    .light.amber {
+      background: var(--amber);
+    }
+
+    .light.red {
+      background: var(--red);
+    }
+
+    .light.active {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 0 0 8px rgba(255,255,255,0.07), 0 0 28px currentColor;
+    }
+
+    .light.green.active {
+      color: rgba(31, 143, 95, 0.9);
+    }
+
+    .light.amber.active {
+      color: rgba(217, 144, 36, 0.95);
+    }
+
+    .light.red.active {
+      color: rgba(199, 53, 53, 0.95);
+    }
+
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .risk-badge.green {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .risk-badge.amber {
+      background: var(--amber-soft);
+      color: #94610c;
+    }
+
+    .risk-badge.red {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .risk-summary h2 {
+      margin: 0 0 8px;
+      font-size: 1.55rem;
+      letter-spacing: -0.04em;
+    }
+
+    .risk-summary p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .progress-block {
+      margin: 18px 0 18px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 14px;
+      border-radius: 999px;
+      background: #e8edf3;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-track::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: var(--green);
+      transition: width 300ms ease, background 260ms ease;
+    }
+
+    .pedagogical-message {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .pedagogical-message:hover {
+      transform: translateY(-2px);
+    }
+
+    .pedagogical-message strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.02rem;
+    }
+
+    .pedagogical-message p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .dashboard[data-risk="green"] .progress-fill {
+      background: var(--green);
+    }
+
+    .dashboard[data-risk="amber"] .progress-fill {
+      background: var(--amber);
+    }
+
+    .dashboard[data-risk="red"] .progress-fill {
+      background: var(--red);
+    }
+
+    .dashboard[data-risk="green"] .pedagogical-message {
+      background: var(--green-soft);
+      border-color: rgba(31, 143, 95, 0.28);
+    }
+
+    .dashboard[data-risk="amber"] .pedagogical-message {
+      background: var(--amber-soft);
+      border-color: rgba(217, 144, 36, 0.33);
+    }
+
+    .dashboard[data-risk="red"] .pedagogical-message {
+      background: var(--red-soft);
+      border-color: rgba(199, 53, 53, 0.28);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 800;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(31, 41, 51, 0.12);
+    }
+
+    .btn:focus-visible,
+    .matrix-info-btn:focus-visible,
+    .indicator-card input:focus-visible + label {
+      outline: 3px solid rgba(35, 50, 68, 0.28);
+      outline-offset: 3px;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: #233244;
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      background: #eef2f6;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .indicators-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .indicator-card {
+      position: relative;
+    }
+
+    .indicator-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .indicator-card label {
+      min-height: 182px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: #fff;
+      cursor: pointer;
+      transition:
+        border-color var(--transition),
+        background var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+    }
+
+    .indicator-card label:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 26px rgba(31, 41, 51, 0.08);
+    }
+
+    .indicator-card input:checked + label {
+      background: linear-gradient(180deg, #fff, #fff7f7);
+      border-color: rgba(199, 53, 53, 0.38);
+      box-shadow: 0 16px 30px rgba(199, 53, 53, 0.09);
+    }
+
+    .indicator-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .indicator-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: #f1f5f9;
+      font-size: 1.35rem;
+    }
+
+    .check-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #cbd5df;
+      font-size: 0.86rem;
+      font-weight: 900;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .indicator-card input:checked + label .check-mark {
+      background: var(--red);
+      transform: rotate(8deg) scale(1.05);
+    }
+
+    .indicator-card h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      letter-spacing: -0.025em;
+    }
+
+    .indicator-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .indicator-card small {
+      margin-top: auto;
+      color: #7a4b00;
+      background: var(--amber-soft);
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .matrix {
+      display: grid;
+      gap: 12px;
+    }
+
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) minmax(0, 1fr) 126px;
+      gap: 10px;
+      align-items: stretch;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      transition:
+        border-color var(--transition),
+        background var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+    }
+
+    .matrix-row:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .matrix-row.active {
+      border-color: rgba(199, 53, 53, 0.34);
+      background: #fff8f8;
+    }
+
+    .matrix-row.warning {
+      border-color: rgba(217, 144, 36, 0.36);
+      background: #fffbf2;
+    }
+
+    .matrix-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      align-self: center;
+      background: #f1f5f9;
+      color: var(--muted);
+      font-size: 1.25rem;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+
+    .matrix-row.active .matrix-icon {
+      background: var(--red-soft);
+      color: var(--red);
+      transform: scale(1.04);
+    }
+
+    .matrix-row.warning .matrix-icon {
+      background: var(--amber-soft);
+      color: #94610c;
+      transform: scale(1.04);
+    }
+
+    .matrix-cell {
+      padding: 13px;
+      border-radius: 13px;
+      background: #f8fafc;
+    }
+
+    .matrix-cell strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .matrix-cell span {
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .matrix-cell.risk {
+      background: #fff;
+      border: 1px solid #eef2f6;
+    }
+
+    .matrix-row.active .matrix-cell.risk {
+      background: var(--red-soft);
+      border-color: rgba(199, 53, 53, 0.25);
+    }
+
+    .matrix-row.warning .matrix-cell.risk {
+      background: var(--amber-soft);
+      border-color: rgba(217, 144, 36, 0.25);
+    }
+
+    .matrix-tools {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      min-width: 112px;
+    }
+
+    .matrix-state {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 104px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: background var(--transition), color var(--transition);
+      text-align: center;
+    }
+
+    .matrix-state.active {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .matrix-state.warning {
+      background: var(--amber-soft);
+      color: #94610c;
+    }
+
+    .matrix-info-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .matrix-info-btn:hover {
+      background: #f8fafc;
+      border-color: #b8c4d3;
+      transform: translateY(-1px);
+    }
+
+    .matrix-info-btn .info-dot {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #eef2f6;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .matrix-detail {
+      grid-column: 2 / -1;
+      display: none;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .matrix-row.expanded .matrix-detail {
+      display: block;
+      animation: rise 220ms ease both;
+    }
+
+    .matrix-detail strong {
+      color: var(--ink);
+    }
+
+    .interpretation-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .text-box {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: #f8fafc;
+      border: 1px solid var(--line);
+    }
+
+    .text-box h3 {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+    }
+
+    .text-box p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .dynamic-list {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .dynamic-list li {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #edf2f7;
+      color: var(--muted);
+    }
+
+    .dynamic-list li::before {
+      content: "•";
+      color: var(--amber);
+      font-weight: 900;
+    }
+
+    .critical-example {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(199, 53, 53, 0.24);
+      background: var(--red-soft);
+      display: none;
+    }
+
+    .critical-example.visible {
+      display: block;
+      animation: rise 260ms ease both;
+    }
+
+    .critical-example strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--red);
+    }
+
+    .critical-example p {
+      margin: 0;
+      color: #7a2020;
+    }
+
+    .academic-footer {
+      margin: 28px auto 0;
+      padding: 18px 22px 0;
+      max-width: 880px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .academic-footer p {
+      margin: 0 auto 6px;
+    }
+
+    .academic-footer .sources {
+      max-width: 760px;
+      margin-inline: auto;
+      font-size: 0.82rem;
+      color: #7a8796;
+    }
+
+    @keyframes shimmer {
+      0%, 55% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .traffic-card {
+        position: static;
+      }
+
+      .traffic-visual {
+        grid-template-columns: 96px 1fr;
+      }
+
+      .traffic-light {
+        width: 96px;
+      }
+
+      .light {
+        width: 68px;
+        height: 68px;
+      }
+
+      .matrix-row {
+        grid-template-columns: 50px 1fr 1fr;
+      }
+
+      .matrix-tools {
+        grid-column: 2 / -1;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .matrix-detail {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 22px, 1180px);
+        padding-top: 18px;
+      }
+
+      .hero-card,
+      .method-card,
+      .panel {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .indicators-grid,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .traffic-visual {
+        grid-template-columns: 1fr;
+      }
+
+      .traffic-light {
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        border-radius: 26px;
+      }
+
+      .light {
+        width: 100%;
+        aspect-ratio: 1;
+        height: auto;
+      }
+
+      .indicator-card label {
+        min-height: auto;
+      }
+
+      .matrix-row {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .matrix-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      .matrix-cell,
+      .matrix-tools,
+      .matrix-detail {
+        grid-column: 1 / -1;
+      }
+
+      .matrix-tools {
+        align-items: stretch;
+      }
+
+      .matrix-state,
+      .matrix-info-btn {
+        width: 100%;
+      }
+
+      .academic-footer {
+        padding-inline: 8px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero" aria-labelledby="dashboard-title">
+      <div class="hero-card">
+        <span class="eyebrow">🎓 Educación Social · Estructura Social · UNIR</span>
+        <h1 id="dashboard-title">Semáforo de Riesgo Estructural de los Cuidados</h1>
+        <p>
+          Herramienta visual para analizar cómo el cuidado, cuando se distribuye de forma desigual
+          según género, clase social, capital económico, tiempo disponible y redes de apoyo, puede
+          pasar de ser una función protectora a convertirse en un mecanismo de exclusión social.
+        </p>
+      </div>
+
+      <aside class="method-card" aria-label="Criterio sociológico del dashboard">
+        <div>
+          <h2>Lectura sociológica</h2>
+          <p>
+            El riesgo se entiende como una suma individual de problemas, y como una acumulación
+            estructural de condiciones que limitan la autonomía, la participación y las trayectorias
+            educativas o laborales.
+          </p>
+        </div>
+
+        <div class="method-note">
+          El semáforo representa detección temprana: permite observar cuándo el hogar conserva
+          apoyos suficientes, cuándo aparecen tensiones y cuándo se concentra el riesgo.
+        </div>
+      </aside>
+    </section>
+
+    <section class="dashboard" id="dashboard" data-risk="green">
+      <aside class="panel traffic-card" aria-label="Resultado del semáforo">
+        <div class="panel-title">
+          <h2>Resultado</h2>
+          <span class="small-label" id="active-count">0 / 5 indicadores</span>
+        </div>
+
+        <div class="traffic-visual">
+          <div class="traffic-light" aria-hidden="true">
+            <div class="light green active" id="light-green"></div>
+            <div class="light amber" id="light-amber"></div>
+            <div class="light red" id="light-red"></div>
+          </div>
+
+          <div class="risk-summary" aria-live="polite">
+            <span class="risk-badge green" id="risk-badge">🟢 Riesgo verde</span>
+            <h2 id="risk-title">Cuidado sostenido por protección social</h2>
+            <p id="risk-description">
+              El hogar dispone de tiempo, red de apoyo, ingresos estables, servicios públicos
+              accesibles y reparto corresponsable.
+            </p>
+          </div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-meta">
+            <span>Acumulación estructural</span>
+            <strong id="risk-percent">0%</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="pedagogical-message">
+          <strong id="pedagogical-title">El cuidado funciona como sostén cotidiano.</strong>
+          <p id="pedagogical-text">
+            Las condiciones materiales e institucionales permiten cuidar sin romper vínculos,
+            estudios, empleo, descanso ni participación comunitaria.
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" type="button" id="reset-btn">Restablecer</button>
+          <button class="btn btn-primary" type="button" id="critical-btn">Activar caso crítico</button>
+        </div>
+      </aside>
+
+      <div class="content-grid">
+        <section class="panel" aria-labelledby="indicators-title">
+          <div class="panel-title">
+            <h2 id="indicators-title">Indicadores críticos de riesgo</h2>
+            <span class="small-label">Activa o desactiva</span>
+          </div>
+
+          <div class="indicators-grid" id="indicators-grid">
+            <div class="indicator-card">
+              <input type="checkbox" id="time" data-indicator="time" />
+              <label for="time">
+                <div class="indicator-top">
+                  <span class="indicator-icon">⏳</span>
+                  <span class="check-mark">✓</span>
+                </div>
+                <h3>Tiempo capturado por cuidados</h3>
+                <p>
+                  El cuidado absorbe la organización cotidiana y reduce el margen para estudiar,
+                  trabajar, descansar o participar socialmente.
+                </p>
+                <small>Dimensión afectada: tiempo social disponible</small>
+              </label>
+            </div>
+
+            <div class="indicator-card">
+              <input type="checkbox" id="trajectory" data-indicator="trajectory" />
+              <label for="trajectory">
+                <div class="indicator-top">
+                  <span class="indicator-icon">🎓</span>
+                  <span class="check-mark">✓</span>
+                </div>
+                <h3>Trayectoria educativa o laboral interrumpida</h3>
+                <p>
+                  La responsabilidad de cuidar obliga a reducir jornada, abandonar estudios,
+                  posponer formación o aceptar empleos más precarios.
+                </p>
+                <small>Dimensión afectada: movilidad y proyecto vital</small>
+              </label>
+            </div>
+
+            <div class="indicator-card">
+              <input type="checkbox" id="network" data-indicator="network" />
+              <label for="network">
+                <div class="indicator-top">
+                  <span class="indicator-icon">🤝</span>
+                  <span class="check-mark">✓</span>
+                </div>
+                <h3>Red familiar o vecinal débil</h3>
+                <p>
+                  La ausencia de apoyos cercanos concentra el cuidado en pocas personas,
+                  aumentando sobrecarga, aislamiento y dependencia.
+                </p>
+                <small>Dimensión afectada: capital social y apoyo comunitario</small>
+              </label>
+            </div>
+
+            <div class="indicator-card">
+              <input type="checkbox" id="bureaucracy" data-indicator="bureaucracy" />
+              <label for="bureaucracy">
+                <div class="indicator-top">
+                  <span class="indicator-icon">🏛️</span>
+                  <span class="check-mark">✓</span>
+                </div>
+                <h3>Burocracia inaccesible o dificultades institucionales</h3>
+                <p>
+                  Los recursos existen formalmente, pero los trámites, esperas, requisitos o
+                  barreras digitales impiden un acceso efectivo.
+                </p>
+                <small>Dimensión afectada: acceso real a derechos sociales</small>
+              </label>
+            </div>
+
+            <div class="indicator-card">
+              <input type="checkbox" id="income" data-indicator="income" />
+              <label for="income">
+                <div class="indicator-top">
+                  <span class="indicator-icon">€</span>
+                  <span class="check-mark">✓</span>
+                </div>
+                <h3>Baja capacidad económica para contratar apoyos</h3>
+                <p>
+                  El hogar no puede comprar tiempo de cuidado, apoyo profesional, transporte,
+                  respiro familiar u otros servicios complementarios.
+                </p>
+                <small>Dimensión afectada: capital económico</small>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="matrix-title">
+          <div class="panel-title">
+            <h2 id="matrix-title">Matriz de acumulación estructural</h2>
+            <span class="small-label">Protección ↔ Riesgo</span>
+          </div>
+
+          <div class="matrix" id="matrix">
+            <div class="matrix-row" data-row="time">
+              <div class="matrix-icon" aria-hidden="true">⏳</div>
+              <div class="matrix-cell">
+                <strong>Tiempo suficiente</strong>
+                <span>El cuidado se integra sin capturar toda la vida cotidiana.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Tiempo capturado</strong>
+                <span>El cuidado desplaza descanso, empleo, estudios y participación.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Protección</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> esta dimensión permite observar cuándo el cuidado
+                deja de organizarse como responsabilidad compartida y comienza a capturar el tiempo social
+                disponible de una persona o de un hogar.
+              </div>
+            </div>
+
+            <div class="matrix-row" data-row="trajectory">
+              <div class="matrix-icon" aria-hidden="true">🎓</div>
+              <div class="matrix-cell">
+                <strong>Trayectoria sostenida</strong>
+                <span>El proyecto educativo o laboral puede continuar.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Trayectoria interrumpida</strong>
+                <span>La persona cuidadora asume costes biográficos acumulativos.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Protección</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> cuando el cuidado interrumpe estudios o empleo,
+                el riesgo no es solo presente; también afecta a la movilidad social, a la autonomía futura
+                y al proyecto vital.
+              </div>
+            </div>
+
+            <div class="matrix-row" data-row="network">
+              <div class="matrix-icon" aria-hidden="true">🤝</div>
+              <div class="matrix-cell">
+                <strong>Red de apoyo</strong>
+                <span>La familia, el vecindario o la comunidad distribuyen cargas.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Red débil</strong>
+                <span>La responsabilidad se individualiza y se vuelve invisible.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Protección</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> una red débil convierte el cuidado en una carga
+                privatizada. La ausencia de apoyo comunitario aumenta aislamiento, dependencia y sobrecarga.
+              </div>
+            </div>
+
+            <div class="matrix-row" data-row="bureaucracy">
+              <div class="matrix-icon" aria-hidden="true">🏛️</div>
+              <div class="matrix-cell">
+                <strong>Servicios accesibles</strong>
+                <span>El derecho social se transforma en apoyo efectivo.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Burocracia inaccesible</strong>
+                <span>La protección pública no llega a tiempo o no llega realmente.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Protección</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> no basta con que el recurso exista formalmente.
+                La protección social solo reduce desigualdad si es comprensible, accesible, rápida y efectiva.
+              </div>
+            </div>
+
+            <div class="matrix-row" data-row="income">
+              <div class="matrix-icon" aria-hidden="true">€</div>
+              <div class="matrix-cell">
+                <strong>Ingresos estables</strong>
+                <span>El hogar puede sostener apoyos, transporte o respiro.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Baja capacidad económica</strong>
+                <span>La desigualdad de clase limita la posibilidad de comprar apoyo.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Protección</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> el capital económico condiciona la posibilidad
+                de contratar apoyos, ganar tiempo o acceder a recursos complementarios. Por eso el cuidado
+                también expresa desigualdad de clase.
+              </div>
+            </div>
+
+            <div class="matrix-row" data-row="shared-care" data-transversal="true">
+              <div class="matrix-icon" aria-hidden="true">⚖️</div>
+              <div class="matrix-cell">
+                <strong>Reparto corresponsable</strong>
+                <span>El cuidado se distribuye entre hogar, comunidad, servicios públicos y redes de apoyo.</span>
+              </div>
+              <div class="matrix-cell risk">
+                <strong>Cuidado concentrado</strong>
+                <span>La carga recae en pocas personas y aumenta la desigualdad de género, clase y tiempo.</span>
+              </div>
+              <div class="matrix-tools">
+                <span class="matrix-state">Corresponsable</span>
+                <button class="matrix-info-btn" type="button" aria-expanded="false">
+                  <span class="matrix-btn-text">Lectura</span>
+                  <span class="info-dot">i</span>
+                </button>
+              </div>
+              <div class="matrix-detail">
+                <strong>Lectura sociológica:</strong> este módulo es transversal. No añade un sexto indicador
+                al semáforo, sino que muestra la condición estructural que atraviesa todo el análisis:
+                cuando el cuidado no se reparte corresponsablemente, se privatiza, se feminiza y se convierte
+                en una fuente de desigualdad acumulada.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="reading-title">
+          <div class="panel-title">
+            <h2 id="reading-title">Interpretación pedagógica</h2>
+            <span class="small-label">Lectura para el foro</span>
+          </div>
+
+          <div class="interpretation-grid">
+            <article class="text-box">
+              <h3>Consecuencias observables</h3>
+              <p id="consequences-intro">
+                En nivel verde predominan condiciones protectoras que sostienen el cuidado sin
+                producir exclusión.
+              </p>
+              <ul class="dynamic-list" id="consequences-list"></ul>
+            </article>
+          </div>
+
+          <div class="critical-example" id="critical-example">
+            <strong>Ejemplo crítico de concentración del riesgo estructural</strong>
+            <p>
+              Mujer que reduce jornada, adolescente que cuida hermanos, persona mayor sola y ausencia
+              de recursos formales. En este escenario, el cuidado deja de operar como protección y se
+              convierte en mecanismo de exclusión.
+            </p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="academic-footer" aria-label="Autoría y fuentes">
+      <p>
+        Carlos Aranda · 2026 · Dashboard académico realizado con apoyo de ChatGPT.
+      </p>
+      <p class="sources">
+        Fuentes conceptuales: materiales de la asignatura Estructura Social del Grado en Educación Social de UNIR.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    const dashboard = document.querySelector("#dashboard");
+    const checkboxes = [...document.querySelectorAll("[data-indicator]")];
+
+    const lights = {
+      green: document.querySelector("#light-green"),
+      amber: document.querySelector("#light-amber"),
+      red: document.querySelector("#light-red")
+    };
+
+    const riskBadge = document.querySelector("#risk-badge");
+    const riskTitle = document.querySelector("#risk-title");
+    const riskDescription = document.querySelector("#risk-description");
+    const activeCount = document.querySelector("#active-count");
+    const riskPercent = document.querySelector("#risk-percent");
+    const progressFill = document.querySelector("#progress-fill");
+    const pedagogicalTitle = document.querySelector("#pedagogical-title");
+    const pedagogicalText = document.querySelector("#pedagogical-text");
+    const consequencesIntro = document.querySelector("#consequences-intro");
+    const consequencesList = document.querySelector("#consequences-list");
+    const criticalExample = document.querySelector("#critical-example");
+    const resetBtn = document.querySelector("#reset-btn");
+    const criticalBtn = document.querySelector("#critical-btn");
+
+    const indicators = {
+      time: {
+        consequence: "Reorganización del tiempo de estudio, trabajo y descanso."
+      },
+      trajectory: {
+        consequence: "Ajuste o interrupción de empleo, formación y proyecto vital."
+      },
+      network: {
+        consequence: "Aumento de aislamiento, sobrecarga y dependencia de una sola persona cuidadora."
+      },
+      bureaucracy: {
+        consequence: "El derecho social queda bloqueado por trámites, esperas o barreras de acceso."
+      },
+      income: {
+        consequence: "La clase social condiciona la posibilidad de comprar tiempo, apoyo o respiro."
+      }
+    };
+
+    const stateText = {
+      green: {
+        badge: "🟢 Riesgo verde",
+        title: "Cuidado sostenido por protección social",
+        description:
+          "El hogar dispone de tiempo suficiente, red de apoyo familiar o comunitaria, ingresos estables, acceso efectivo a servicios públicos y reparto corresponsable.",
+        pedagogicalTitle: "El cuidado funciona como sostén cotidiano.",
+        pedagogicalText:
+          "Las condiciones materiales e institucionales permiten cuidar sin romper vínculos, estudios, empleo, descanso ni participación comunitaria.",
+        intro:
+          "En nivel verde predominan condiciones protectoras que sostienen el cuidado sin producir exclusión.",
+        consequences: [
+          "Tiempo suficiente para cuidar sin capturar toda la vida cotidiana.",
+          "Red de apoyo familiar, vecinal o comunitaria disponible.",
+          "Ingresos estables que permiten sostener apoyos complementarios.",
+          "Acceso efectivo a servicios públicos y recursos formales.",
+          "Reparto corresponsable de los cuidados dentro y fuera del hogar."
+        ]
+      },
+      amber: {
+        badge: "🟠 Riesgo ámbar",
+        title: "Tensión social acumulativa",
+        description:
+          "Una o varias dimensiones se debilitan. El cuidado empieza a competir con estudios, empleo, descanso y participación comunitaria.",
+        pedagogicalTitle: "El cuidado entra en zona de alerta.",
+        pedagogicalText:
+          "El riesgo todavía no está plenamente concentrado, pero ya exige reorganizar estudios, ajustar empleo, reducir descanso o limitar participación comunitaria.",
+        intro:
+          "En nivel ámbar aparecen señales tempranas: no hay colapso total, pero sí debilitamiento de las condiciones de protección.",
+        consequences: [
+          "Reorganizar estudios para responder a demandas de cuidado.",
+          "Ajustar empleo, jornada, disponibilidad o expectativas laborales.",
+          "Reducir descanso, autocuidado y tiempo personal.",
+          "Limitar participación comunitaria, vínculos sociales o presencia pública."
+        ]
+      },
+      red: {
+        badge: "🔴 Riesgo rojo",
+        title: "Concentración de riesgo estructural",
+        description:
+          "Coinciden simultáneamente los cinco indicadores críticos. El cuidado deja de distribuirse socialmente y queda concentrado en hogares con menor margen.",
+        pedagogicalTitle: "El cuidado deja de ser protector y se convierte en mecanismo de exclusión.",
+        pedagogicalText:
+          "La simultaneidad de tiempo capturado, trayectoria interrumpida, red débil, burocracia inaccesible y baja capacidad económica produce acumulación estructural del riesgo.",
+        intro:
+          "En nivel rojo la desigualdad de los cuidados se vuelve estructuralmente crítica: el hogar soporta responsabilidades sin tiempo, red, ingresos ni acceso real a recursos.",
+        consequences: [
+          "Interrupción de trayectorias educativas o laborales.",
+          "Sobrecarga intensa de mujeres, adolescentes, mayores o personas con menos recursos.",
+          "Aislamiento social y pérdida de participación comunitaria.",
+          "Dependencia de recursos públicos que no llegan de forma efectiva.",
+          "Reproducción de desigualdades de género, clase y capital social."
+        ]
+      }
+    };
+
+    function getSelectedIndicators() {
+      return checkboxes
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.indicator);
+    }
+
+    function getRiskLevel(count) {
+      if (count === 0) return "green";
+      if (count === checkboxes.length) return "red";
+      return "amber";
+    }
+
+    function updateTrafficLight(level) {
+      Object.entries(lights).forEach(([key, element]) => {
+        element.classList.toggle("active", key === level);
+      });
+    }
+
+    function updateMatrix(selected, level) {
+      const activeCountValue = selected.length;
+
+      document.querySelectorAll(".matrix-row").forEach((row) => {
+        const state = row.querySelector(".matrix-state");
+        const isTransversal = row.dataset.transversal === "true";
+
+        let isActive = selected.includes(row.dataset.row);
+        let isWarning = false;
+        let label = isActive ? "Riesgo activado" : "Protección";
+
+        if (isTransversal) {
+          isActive = level === "red";
+          isWarning = activeCountValue > 0 && level === "amber";
+
+          if (level === "green") label = "Corresponsable";
+          if (level === "amber") label = "En tensión";
+          if (level === "red") label = "Concentrado";
+        }
+
+        row.classList.toggle("active", isActive);
+        row.classList.toggle("warning", isWarning);
+
+        if (state) {
+          state.textContent = label;
+          state.classList.toggle("active", isActive);
+          state.classList.toggle("warning", isWarning);
+        }
+      });
+    }
+
+    function renderList(items) {
+      consequencesList.innerHTML = "";
+
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        consequencesList.appendChild(li);
+      });
+    }
+
+    function buildConsequences(level, selected) {
+      if (level !== "amber") {
+        return stateText[level].consequences;
+      }
+
+      const selectedConsequences = selected.map((id) => indicators[id].consequence);
+      const structuralConsequences = stateText.amber.consequences;
+
+      return [...new Set([...selectedConsequences, ...structuralConsequences])];
+    }
+
+    function updateDashboard() {
+      const selected = getSelectedIndicators();
+      const count = selected.length;
+      const level = getRiskLevel(count);
+      const copy = stateText[level];
+      const percent = Math.round((count / checkboxes.length) * 100);
+
+      dashboard.dataset.risk = level;
+
+      activeCount.textContent = `${count} / ${checkboxes.length} indicadores`;
+      riskPercent.textContent = `${percent}%`;
+      progressFill.style.width = `${percent}%`;
+
+      riskBadge.className = `risk-badge ${level}`;
+      riskBadge.textContent = copy.badge;
+
+      riskTitle.textContent = copy.title;
+      riskDescription.textContent = copy.description;
+      pedagogicalTitle.textContent = copy.pedagogicalTitle;
+      pedagogicalText.textContent = copy.pedagogicalText;
+      consequencesIntro.textContent = copy.intro;
+
+      renderList(buildConsequences(level, selected));
+      updateTrafficLight(level);
+      updateMatrix(selected, level);
+
+      criticalExample.classList.toggle("visible", level === "red");
+    }
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", updateDashboard);
+    });
+
+    document.querySelectorAll(".matrix-info-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const row = button.closest(".matrix-row");
+        const text = button.querySelector(".matrix-btn-text");
+        const isExpanded = row.classList.toggle("expanded");
+
+        button.setAttribute("aria-expanded", String(isExpanded));
+        text.textContent = isExpanded ? "Ocultar" : "Lectura";
+      });
+    });
+
+    resetBtn.addEventListener("click", () => {
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+
+      updateDashboard();
+    });
+
+    criticalBtn.addEventListener("click", () => {
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = true;
+      });
+
+      updateDashboard();
+
+      criticalExample.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    });
+
+    updateDashboard();
+  </script>
+</body>
+</html>
