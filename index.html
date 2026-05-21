@@ -214,15 +214,26 @@
 
     .scenario-grid {
       display: grid;
-      grid-template-columns: 0.92fr 1.08fr;
-      gap: 22px;
-      align-items: start;
+      grid-template-columns: minmax(390px, 0.96fr) minmax(500px, 1.04fr);
+      gap: 24px;
+      align-items: stretch;
     }
 
     .panel,
     .result-card,
     .reading-card {
       padding: 24px;
+    }
+
+    .panel {
+      height: 100%;
+    }
+
+    .result-card {
+      position: sticky;
+      top: 22px;
+      overflow: hidden;
+      align-self: start;
     }
 
     .panel-title {
@@ -352,10 +363,45 @@
       border: 1px solid #d5cec2;
     }
 
-    .result-card {
-      position: sticky;
-      top: 22px;
-      overflow: hidden;
+    .input-context-note {
+      margin-top: 4px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px dashed #d7cdbf;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.58), rgba(248,244,238,0.78));
+      color: #5f7184;
+      font-size: 0.84rem;
+    }
+
+    .input-context-note strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-size: 0.9rem;
+    }
+
+    .input-context-note p {
+      margin: 0 0 12px;
+    }
+
+    .input-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .input-mini-grid span {
+      padding: 9px 10px;
+      border-radius: 12px;
+      background: #fffdfa;
+      border: 1px solid #ece4d8;
+      color: #607386;
+      font-size: 0.76rem;
+    }
+
+    .input-mini-grid b {
+      color: var(--navy);
     }
 
     .result-top {
@@ -441,68 +487,69 @@
     }
 
     .traffic-panel {
-      margin: 12px 0 18px;
-      padding: 18px;
+      margin: 14px 0 18px;
+      padding: 22px;
       border: 1px solid #e4dccf;
-      border-radius: 22px;
+      border-radius: 24px;
       background:
-        linear-gradient(180deg, rgba(255, 253, 250, 0.94), rgba(246, 241, 233, 0.92));
+        radial-gradient(circle at 14% 20%, rgba(47, 103, 232, 0.08), transparent 14rem),
+        linear-gradient(180deg, rgba(255, 253, 250, 0.96), rgba(246, 241, 233, 0.94));
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 10px 24px rgba(33, 30, 24, 0.05);
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        0 14px 30px rgba(33, 30, 24, 0.07);
     }
 
     .traffic-header {
       display: grid;
       gap: 6px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .traffic-header p {
       margin: 0;
       color: #657689;
-      font-size: 0.86rem;
-      max-width: 560px;
+      font-size: 0.88rem;
+      max-width: 620px;
     }
 
     .traffic-content {
       display: grid;
-      grid-template-columns: 96px 1fr;
-      gap: 20px;
+      grid-template-columns: 132px minmax(0, 1fr);
+      gap: 24px;
       align-items: center;
     }
 
     .traffic-light {
-      width: 96px;
-      padding: 14px;
+      width: 132px;
+      padding: 17px;
       border-radius: 999px;
       background:
-        linear-gradient(180deg, #2c3948 0%, #15202c 55%, #0f1822 100%);
+        linear-gradient(180deg, #303d4d 0%, #172331 54%, #0d1620 100%);
       display: grid;
-      gap: 12px;
+      gap: 14px;
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 18px 32px rgba(16, 25, 35, 0.22);
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 22px 40px rgba(16, 25, 35, 0.26);
       position: relative;
     }
 
     .traffic-light::after {
       content: "";
       position: absolute;
-      inset: 8px;
+      inset: 9px;
       border-radius: 999px;
       pointer-events: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 35%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 38%);
     }
 
     .traffic-bulb {
-      width: 68px;
-      height: 68px;
-      border: 3px solid rgba(255, 255, 255, 0.16);
+      width: 98px;
+      height: 98px;
+      border: 4px solid rgba(255, 255, 255, 0.16);
       border-radius: 999px;
       cursor: pointer;
-      opacity: 0.26;
+      opacity: 0.25;
       transform: scale(0.94);
       transition:
         opacity var(--transition),
@@ -517,8 +564,8 @@
     .traffic-bulb::after {
       content: "";
       position: absolute;
-      inset: 8px 12px auto 12px;
-      height: 18px;
+      inset: 10px 17px auto 17px;
+      height: 24px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.18);
       filter: blur(1px);
@@ -539,30 +586,30 @@
     .traffic-bulb.active {
       opacity: 1;
       transform: scale(1);
-      filter: saturate(1.05);
+      filter: saturate(1.08);
     }
 
     .traffic-bulb.selected {
-      border-color: rgba(255, 255, 255, 0.92);
-      box-shadow: 0 0 0 5px rgba(255,255,255,0.1);
+      border-color: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 0 0 6px rgba(255,255,255,0.1);
     }
 
     .traffic-bulb.red.active {
       box-shadow:
-        0 0 0 5px rgba(255,255,255,0.08),
-        0 0 28px rgba(200, 75, 23, 0.55);
+        0 0 0 6px rgba(255,255,255,0.08),
+        0 0 32px rgba(200, 75, 23, 0.58);
     }
 
     .traffic-bulb.amber.active {
       box-shadow:
-        0 0 0 5px rgba(255,255,255,0.08),
-        0 0 28px rgba(217, 122, 19, 0.48);
+        0 0 0 6px rgba(255,255,255,0.08),
+        0 0 32px rgba(217, 122, 19, 0.5);
     }
 
     .traffic-bulb.green.active {
       box-shadow:
-        0 0 0 5px rgba(255,255,255,0.08),
-        0 0 28px rgba(37, 132, 97, 0.48);
+        0 0 0 6px rgba(255,255,255,0.08),
+        0 0 32px rgba(37, 132, 97, 0.52);
     }
 
     .traffic-info {
@@ -579,15 +626,15 @@
     .traffic-info strong {
       display: block;
       color: var(--navy);
-      font-size: 1.02rem;
-      letter-spacing: -0.02em;
+      font-size: 1.08rem;
+      letter-spacing: -0.025em;
     }
 
     .traffic-info p {
       margin: 0;
       color: #5e7083;
-      font-size: 0.9rem;
-      max-width: 560px;
+      font-size: 0.91rem;
+      max-width: 620px;
     }
 
     .traffic-tags {
@@ -629,18 +676,17 @@
     }
 
     .traffic-note {
-      padding: 10px 12px;
+      padding: 11px 13px;
       border-radius: 14px;
-      background: rgba(255,255,255,0.62);
+      background: rgba(255,255,255,0.66);
       border: 1px solid #ece4d8;
       color: #6a7d8f;
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .risk-message,
     .dominant-box {
-      margin: 12px 0 18px;
       padding: 17px;
       border-radius: var(--radius-lg);
       color: #496177;
@@ -675,9 +721,23 @@
       border-color: rgba(200, 75, 23, 0.24);
     }
 
+    .result-insights {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 14px 0 18px;
+    }
+
+    .result-insights .risk-message,
+    .result-insights .dominant-box {
+      margin: 0;
+      height: 100%;
+    }
+
     .factor-list {
       display: grid;
-      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px 15px;
       margin-bottom: 18px;
     }
 
@@ -718,7 +778,8 @@
     .factor-help {
       margin: 0;
       color: #6d7d8c;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
+      line-height: 1.35;
     }
 
     .radar-card {
@@ -738,11 +799,11 @@
     .radar-wrap {
       display: grid;
       place-items: center;
-      min-height: 285px;
+      min-height: 238px;
     }
 
     .radar-svg {
-      width: min(100%, 360px);
+      width: min(100%, 315px);
       height: auto;
       overflow: visible;
     }
@@ -1110,7 +1171,10 @@
     body.android-preview .info-grid,
     body.android-preview .scenario-grid,
     body.android-preview .reading-grid,
-    body.android-preview .method-grid {
+    body.android-preview .method-grid,
+    body.android-preview .result-insights,
+    body.android-preview .factor-list,
+    body.android-preview .input-mini-grid {
       grid-template-columns: 1fr;
     }
 
@@ -1168,7 +1232,9 @@
       .info-grid,
       .scenario-grid,
       .reading-grid,
-      .method-grid {
+      .method-grid,
+      .result-insights,
+      .factor-list {
         grid-template-columns: 1fr;
       }
 
@@ -1197,8 +1263,15 @@
 
       .result-top,
       .matrix-main,
-      .traffic-content {
+      .traffic-content,
+      .input-mini-grid,
+      .result-insights,
+      .factor-list {
         grid-template-columns: 1fr;
+      }
+
+      .traffic-content {
+        gap: 16px;
       }
 
       .traffic-light {
@@ -1390,6 +1463,21 @@
               <button class="btn btn-primary" type="button" id="critical-btn">Aplicar escenario crítico</button>
               <button class="btn btn-secondary" type="button" id="reset-btn">Restablecer</button>
             </div>
+
+            <div class="input-context-note">
+              <strong>Lectura previa de los parámetros</strong>
+              <p>
+                Los controles no describen a una persona aislada. Sirven para construir un escenario social y observar cómo
+                se acumulan o se compensan condiciones de protección y vulnerabilidad.
+              </p>
+
+              <div class="input-mini-grid" aria-label="Claves de lectura de las variables">
+                <span><b>Tiempo</b> carga cotidiana</span>
+                <span><b>Red</b> apoyo comunitario</span>
+                <span><b>Servicios</b> acceso efectivo</span>
+                <span><b>Género</b> corresponsabilidad</span>
+              </div>
+            </div>
           </form>
         </section>
 
@@ -1467,20 +1555,22 @@
             </div>
           </div>
 
-          <div class="risk-message">
-            <strong id="risk-title">Condiciones protectoras suficientes.</strong>
-            <p id="risk-description">
-              El escenario mantiene margen de tiempo, apoyo institucional, red comunitaria y estabilidad suficiente
-              para que el cuidado no derive en exclusión.
-            </p>
-          </div>
+          <div class="result-insights">
+            <div class="risk-message">
+              <strong id="risk-title">Condiciones protectoras suficientes.</strong>
+              <p id="risk-description">
+                El escenario mantiene margen de tiempo, apoyo institucional, red comunitaria y estabilidad suficiente
+                para que el cuidado no derive en exclusión.
+              </p>
+            </div>
 
-          <div class="dominant-box" id="dominant-box">
-            <strong id="dominant-title">No aparece un factor crítico dominante.</strong>
-            <p id="dominant-text">
-              El escenario muestra condiciones relativamente protectoras. Aun así, conviene mantener seguimiento
-              preventivo porque los cuidados pueden cambiar con rapidez.
-            </p>
+            <div class="dominant-box" id="dominant-box">
+              <strong id="dominant-title">No aparece un factor crítico dominante.</strong>
+              <p id="dominant-text">
+                El escenario muestra condiciones relativamente protectoras. Aun así, conviene mantener seguimiento
+                preventivo porque los cuidados pueden cambiar con rapidez.
+              </p>
+            </div>
           </div>
 
           <div class="factor-list" id="factor-list" aria-label="Desglose de factores de riesgo"></div>
