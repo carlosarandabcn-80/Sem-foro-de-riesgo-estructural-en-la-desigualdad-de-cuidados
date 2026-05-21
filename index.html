@@ -160,7 +160,7 @@
     .panel,
     .result-card,
     .reading-card {
-      background: rgba(255, 253, 250, 0.88);
+      background: rgba(255, 253, 250, 0.9);
       border: 1px solid rgba(216, 209, 197, 0.92);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-soft);
@@ -285,6 +285,7 @@
     .btn:focus-visible,
     .preview-button:focus-visible,
     .matrix-toggle:focus-visible,
+    .traffic-bulb:focus-visible,
     summary:focus-visible {
       outline: 3px solid rgba(47, 103, 232, 0.22);
       outline-offset: 3px;
@@ -437,6 +438,204 @@
       color: #345170;
       font-size: 0.68rem;
       font-weight: 950;
+    }
+
+    .traffic-panel {
+      margin: 12px 0 18px;
+      padding: 18px;
+      border: 1px solid #e4dccf;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255, 253, 250, 0.94), rgba(246, 241, 233, 0.92));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 10px 24px rgba(33, 30, 24, 0.05);
+    }
+
+    .traffic-header {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .traffic-header p {
+      margin: 0;
+      color: #657689;
+      font-size: 0.86rem;
+      max-width: 560px;
+    }
+
+    .traffic-content {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .traffic-light {
+      width: 96px;
+      padding: 14px;
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, #2c3948 0%, #15202c 55%, #0f1822 100%);
+      display: grid;
+      gap: 12px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 18px 32px rgba(16, 25, 35, 0.22);
+      position: relative;
+    }
+
+    .traffic-light::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 999px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 35%);
+    }
+
+    .traffic-bulb {
+      width: 68px;
+      height: 68px;
+      border: 3px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.26;
+      transform: scale(0.94);
+      transition:
+        opacity var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition),
+        filter var(--transition);
+      position: relative;
+      z-index: 1;
+    }
+
+    .traffic-bulb::after {
+      content: "";
+      position: absolute;
+      inset: 8px 12px auto 12px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      filter: blur(1px);
+    }
+
+    .traffic-bulb.red {
+      background: radial-gradient(circle at 35% 30%, #ec7b3a, #d95c19 58%, #a84612 100%);
+    }
+
+    .traffic-bulb.amber {
+      background: radial-gradient(circle at 35% 30%, #e8b463, #b67a27 58%, #7e5319 100%);
+    }
+
+    .traffic-bulb.green {
+      background: radial-gradient(circle at 35% 30%, #2d8f72, #1a5c52 58%, #10443f 100%);
+    }
+
+    .traffic-bulb.active {
+      opacity: 1;
+      transform: scale(1);
+      filter: saturate(1.05);
+    }
+
+    .traffic-bulb.selected {
+      border-color: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 0 0 5px rgba(255,255,255,0.1);
+    }
+
+    .traffic-bulb.red.active {
+      box-shadow:
+        0 0 0 5px rgba(255,255,255,0.08),
+        0 0 28px rgba(200, 75, 23, 0.55);
+    }
+
+    .traffic-bulb.amber.active {
+      box-shadow:
+        0 0 0 5px rgba(255,255,255,0.08),
+        0 0 28px rgba(217, 122, 19, 0.48);
+    }
+
+    .traffic-bulb.green.active {
+      box-shadow:
+        0 0 0 5px rgba(255,255,255,0.08),
+        0 0 28px rgba(37, 132, 97, 0.48);
+    }
+
+    .traffic-info {
+      min-width: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .traffic-info-top {
+      display: grid;
+      gap: 6px;
+    }
+
+    .traffic-info strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+    }
+
+    .traffic-info p {
+      margin: 0;
+      color: #5e7083;
+      font-size: 0.9rem;
+      max-width: 560px;
+    }
+
+    .traffic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .traffic-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      background: #fffdfa;
+      border: 1px solid #e4dccf;
+      color: #566e84;
+    }
+
+    .traffic-tag .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .traffic-tag.red .dot {
+      background: var(--red);
+    }
+
+    .traffic-tag.amber .dot {
+      background: var(--amber);
+    }
+
+    .traffic-tag.green .dot {
+      background: var(--green);
+    }
+
+    .traffic-note {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid #ece4d8;
+      color: #6a7d8f;
+      font-size: 0.8rem;
+      font-weight: 700;
     }
 
     .risk-message,
@@ -660,7 +859,12 @@
       border-radius: 15px;
       background: #fffdfa;
       overflow: hidden;
-      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition),
+        opacity var(--transition),
+        filter var(--transition);
     }
 
     .matrix-row:hover {
@@ -674,6 +878,18 @@
 
     .matrix-row.high {
       border-color: rgba(200, 75, 23, 0.25);
+    }
+
+    .matrix-row.filtered-match {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(36, 31, 22, 0.12);
+      outline: 3px solid rgba(47, 103, 232, 0.14);
+      outline-offset: 2px;
+    }
+
+    .matrix-row.filtered-dim {
+      opacity: 0.38;
+      filter: grayscale(0.35);
     }
 
     .matrix-main {
@@ -907,8 +1123,21 @@
     }
 
     body.android-preview .result-top,
-    body.android-preview .matrix-main {
+    body.android-preview .matrix-main,
+    body.android-preview .traffic-content {
       grid-template-columns: 1fr;
+    }
+
+    body.android-preview .traffic-light {
+      width: 100%;
+      grid-template-columns: repeat(3, 1fr);
+      border-radius: 26px;
+    }
+
+    body.android-preview .traffic-bulb {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
     }
 
     body.android-preview .score-ring {
@@ -967,8 +1196,21 @@
       }
 
       .result-top,
-      .matrix-main {
+      .matrix-main,
+      .traffic-content {
         grid-template-columns: 1fr;
+      }
+
+      .traffic-light {
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        border-radius: 26px;
+      }
+
+      .traffic-bulb {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
       }
 
       .score-ring {
@@ -996,7 +1238,7 @@
   </style>
 </head>
 
-<body data-risk="high">
+<body data-risk="low">
   <main class="page">
     <div class="preview-controls" aria-label="Opciones de visualización">
       <button class="preview-button" type="button" id="android-toggle" aria-pressed="false">
@@ -1083,9 +1325,9 @@
             <div class="field">
               <label for="care-type">Tipo de cuidado</label>
               <select id="care-type">
-                <option value="older" selected>Cuidados a personas mayores</option>
+                <option value="older">Cuidados a personas mayores</option>
                 <option value="dependency">Dependencia o discapacidad</option>
-                <option value="childhood">Infancia</option>
+                <option value="childhood" selected>Infancia</option>
                 <option value="multiple">Cuidado múltiple</option>
               </select>
             </div>
@@ -1093,54 +1335,54 @@
             <div class="range-field">
               <div class="range-head">
                 <label for="hours">Horas semanales de cuidados</label>
-                <output class="value-pill" for="hours" id="hours-value">80 h</output>
+                <output class="value-pill" for="hours" id="hours-value">18 h</output>
               </div>
-              <input id="hours" type="range" min="0" max="80" step="1" value="80" />
+              <input id="hours" type="range" min="0" max="80" step="1" value="18" />
               <p class="range-help">Más horas implican mayor captura del tiempo social disponible.</p>
             </div>
 
             <div class="range-field">
               <div class="range-head">
                 <label for="services">Acceso a servicios públicos</label>
-                <output class="value-pill" for="services" id="services-value">0%</output>
+                <output class="value-pill" for="services" id="services-value">82%</output>
               </div>
-              <input id="services" type="range" min="0" max="100" step="1" value="0" />
+              <input id="services" type="range" min="0" max="100" step="1" value="82" />
               <p class="range-help">A menor acceso efectivo, mayor falta de apoyo público.</p>
             </div>
 
             <div class="range-field">
               <div class="range-head">
                 <label for="income">Estabilidad de ingresos</label>
-                <output class="value-pill" for="income" id="income-value">50%</output>
+                <output class="value-pill" for="income" id="income-value">76%</output>
               </div>
-              <input id="income" type="range" min="0" max="100" step="1" value="50" />
+              <input id="income" type="range" min="0" max="100" step="1" value="76" />
               <p class="range-help">La inestabilidad económica reduce la posibilidad de comprar apoyo o respiro.</p>
             </div>
 
             <div class="range-field">
               <div class="range-head">
                 <label for="network">Red familiar o comunitaria</label>
-                <output class="value-pill" for="network" id="network-value">100%</output>
+                <output class="value-pill" for="network" id="network-value">84%</output>
               </div>
-              <input id="network" type="range" min="0" max="100" step="1" value="100" />
+              <input id="network" type="range" min="0" max="100" step="1" value="84" />
               <p class="range-help">Una red fuerte distribuye responsabilidades y reduce aislamiento.</p>
             </div>
 
             <div class="range-field">
               <div class="range-head">
                 <label for="gender-gap">Brecha de género en cuidados</label>
-                <output class="value-pill" for="gender-gap" id="gender-gap-value">100%</output>
+                <output class="value-pill" for="gender-gap" id="gender-gap-value">24%</output>
               </div>
-              <input id="gender-gap" type="range" min="0" max="100" step="1" value="100" />
+              <input id="gender-gap" type="range" min="0" max="100" step="1" value="24" />
               <p class="range-help">Mide cuánto se concentra la carga en mujeres u otras personas feminizadas.</p>
             </div>
 
             <div class="range-field">
               <div class="range-head">
                 <label for="precarity">Precariedad laboral o vital</label>
-                <output class="value-pill" for="precarity" id="precarity-value">55%</output>
+                <output class="value-pill" for="precarity" id="precarity-value">22%</output>
               </div>
-              <input id="precarity" type="range" min="0" max="100" step="1" value="55" />
+              <input id="precarity" type="range" min="0" max="100" step="1" value="22" />
               <p class="range-help">Resume inseguridad laboral, residencial, administrativa o de proyecto vital.</p>
             </div>
 
@@ -1157,31 +1399,87 @@
               <span class="small-label">Resultado estimado</span>
               <div class="risk-line" aria-live="polite">
                 <span class="risk-dot" aria-hidden="true"></span>
-                <span id="risk-label">Riesgo alto</span>
+                <span id="risk-label">Riesgo bajo</span>
               </div>
             </div>
 
-            <div class="score-ring" id="score-ring" style="--score-progress: 76%;" aria-label="Puntuación de riesgo">
+            <div class="score-ring" id="score-ring" style="--score-progress: 21%;" aria-label="Puntuación de riesgo">
               <div class="score-value">
-                <strong id="score-value">76</strong>
+                <strong id="score-value">21</strong>
                 <span>/100</span>
               </div>
             </div>
           </div>
 
+          <div class="traffic-panel" aria-label="Semáforo interactivo conectado con la matriz">
+            <div class="traffic-header">
+              <span class="small-label">Semáforo interactivo</span>
+              <p>
+                Pulsa una luz para destacar en la matriz las dimensiones en protección, tensión o riesgo.
+              </p>
+            </div>
+
+            <div class="traffic-content">
+              <div class="traffic-light" role="group" aria-label="Filtrar matriz por nivel del semáforo">
+                <button
+                  class="traffic-bulb red"
+                  type="button"
+                  data-filter-level="high"
+                  aria-label="Destacar dimensiones en riesgo"
+                  aria-pressed="false"
+                ></button>
+
+                <button
+                  class="traffic-bulb amber"
+                  type="button"
+                  data-filter-level="medium"
+                  aria-label="Destacar dimensiones en tensión"
+                  aria-pressed="false"
+                ></button>
+
+                <button
+                  class="traffic-bulb green active"
+                  type="button"
+                  data-filter-level="low"
+                  aria-label="Destacar dimensiones en protección"
+                  aria-pressed="false"
+                ></button>
+              </div>
+
+              <div class="traffic-info">
+                <div class="traffic-info-top">
+                  <strong id="traffic-title">Resultado global: protección</strong>
+                  <p id="traffic-text">
+                    El semáforo resume la puntuación total y permite revisar qué dimensiones concretas sostienen ese resultado.
+                  </p>
+                </div>
+
+                <div class="traffic-tags" aria-label="Lectura del semáforo">
+                  <span class="traffic-tag red"><span class="dot"></span> Riesgo</span>
+                  <span class="traffic-tag amber"><span class="dot"></span> Tensión</span>
+                  <span class="traffic-tag green"><span class="dot"></span> Protección</span>
+                </div>
+
+                <div class="traffic-note" id="traffic-note">
+                  Pulsa una luz para filtrar la matriz. Si vuelves a pulsar la misma luz, se mostrará de nuevo la lectura completa.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="risk-message">
-            <strong id="risk-title">Acumulación relevante de vulnerabilidades.</strong>
+            <strong id="risk-title">Condiciones protectoras suficientes.</strong>
             <p id="risk-description">
-              El escenario acumula vulnerabilidades relevantes. Se recomienda intervención prioritaria, mirada comunitaria
-              y activación de apoyos formales.
+              El escenario mantiene margen de tiempo, apoyo institucional, red comunitaria y estabilidad suficiente
+              para que el cuidado no derive en exclusión.
             </p>
           </div>
 
           <div class="dominant-box" id="dominant-box">
-            <strong id="dominant-title">Factor dominante: captura del tiempo.</strong>
+            <strong id="dominant-title">No aparece un factor crítico dominante.</strong>
             <p id="dominant-text">
-              La carga de cuidados ocupa una parte muy elevada de la vida cotidiana y puede desplazar descanso, empleo,
-              formación y participación comunitaria.
+              El escenario muestra condiciones relativamente protectoras. Aun así, conviene mantener seguimiento
+              preventivo porque los cuidados pueden cambiar con rapidez.
             </p>
           </div>
 
@@ -1234,7 +1532,8 @@
         <article class="reading-card">
           <h3>Interpretación pedagógica</h3>
           <p id="reading-intro">
-            En nivel alto, la desigualdad de los cuidados aparece como acumulación de condiciones estructurales.
+            En nivel bajo predominan condiciones protectoras. El cuidado puede organizarse sin romper trayectorias,
+            descanso ni participación.
           </p>
           <ul class="dynamic-list" id="reading-list"></ul>
         </article>
@@ -1251,8 +1550,8 @@
         <article class="reading-card wide">
           <h3>Matriz de acumulación estructural</h3>
           <p>
-            Cada dimensión se interpreta en un eje protección-riesgo. Pulsa en “Lectura” para ver la explicación
-            sociológica de cada factor.
+            Cada dimensión se interpreta en un eje protección-riesgo. El semáforo permite filtrar visualmente qué
+            factores están sosteniendo el resultado global.
           </p>
           <div class="matrix-deep" id="matrix-deep"></div>
         </article>
@@ -1293,10 +1592,10 @@
             </div>
 
             <div class="method-live" id="method-live">
-              En este escenario: base ponderada <strong id="method-base">69.5</strong> +
-              contexto <strong id="method-context">2.5</strong> +
-              acumulación <strong id="method-adjustment">3.5</strong> =
-              <strong id="method-score">76</strong>/100.
+              En este escenario: base ponderada <strong id="method-base">19.8</strong> +
+              contexto <strong id="method-context">1.0</strong> +
+              acumulación <strong id="method-adjustment">0.0</strong> =
+              <strong id="method-score">21</strong>/100.
             </div>
           </div>
         </details>
@@ -1310,6 +1609,7 @@
 
   <script>
     const $ = (selector, scope = document) => scope.querySelector(selector);
+    const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
     const body = document.body;
     const form = $("#scenario-form");
@@ -1319,6 +1619,11 @@
     const riskLabel = $("#risk-label");
     const riskTitle = $("#risk-title");
     const riskDescription = $("#risk-description");
+
+    const trafficTitle = $("#traffic-title");
+    const trafficText = $("#traffic-text");
+    const trafficNote = $("#traffic-note");
+    const trafficBulbs = $$("[data-filter-level]");
 
     const dominantTitle = $("#dominant-title");
     const dominantText = $("#dominant-text");
@@ -1502,6 +1807,24 @@
       }
     };
 
+    const trafficCopy = {
+      low: {
+        title: "protección",
+        text:
+          "Las dimensiones en verde indican condiciones que ayudan a sostener el cuidado sin convertirlo en una carga excluyente."
+      },
+      medium: {
+        title: "tensión",
+        text:
+          "Las dimensiones en ámbar muestran señales de alerta: la protección existe, pero empieza a ser insuficiente o inestable."
+      },
+      high: {
+        title: "riesgo",
+        text:
+          "Las dimensiones en rojo concentran factores que pueden intensificar desigualdad, sobrecarga o exclusión social."
+      }
+    };
+
     const dominantCopy = {
       time: {
         title: "Factor dominante: captura del tiempo.",
@@ -1588,6 +1911,7 @@
     };
 
     let latestState = null;
+    let matrixFilter = null;
 
     function clamp(value, min = 0, max = 100) {
       return Math.min(Math.max(value, min), max);
@@ -1750,6 +2074,31 @@
       });
     }
 
+    function renderTrafficLight(currentLevel) {
+      trafficBulbs.forEach((button) => {
+        const level = button.dataset.filterLevel;
+
+        button.classList.toggle("active", level === currentLevel);
+        button.classList.toggle("selected", level === matrixFilter);
+        button.setAttribute("aria-pressed", String(level === matrixFilter));
+      });
+
+      if (matrixFilter) {
+        const copy = trafficCopy[matrixFilter];
+        trafficTitle.textContent = `Matriz filtrada: ${copy.title}`;
+        trafficText.textContent = copy.text;
+        trafficNote.textContent = "Pulsa de nuevo la misma luz para recuperar la lectura completa de la matriz.";
+        return;
+      }
+
+      const copy = trafficCopy[currentLevel];
+      trafficTitle.textContent = `Resultado global: ${copy.title}`;
+      trafficText.textContent =
+        "El semáforo resume la puntuación total y permite revisar qué dimensiones concretas sostienen ese resultado.";
+      trafficNote.textContent =
+        "Pulsa una luz para filtrar la matriz. Si vuelves a pulsar la misma luz, se mostrará de nuevo la lectura completa.";
+    }
+
     function renderFactors(factors) {
       factorList.innerHTML = "";
 
@@ -1828,6 +2177,11 @@
 
         const row = document.createElement("div");
         row.className = `matrix-row ${state.level === "low" ? "" : state.level}`;
+
+        if (matrixFilter) {
+          row.classList.toggle("filtered-match", state.level === matrixFilter);
+          row.classList.toggle("filtered-dim", state.level !== matrixFilter);
+        }
 
         const main = document.createElement("div");
         main.className = "matrix-main";
@@ -1976,6 +2330,7 @@
       riskTitle.textContent = copy.title;
       riskDescription.textContent = copy.description;
 
+      renderTrafficLight(level);
       renderFactors(values.factors);
       renderRadar(values.factors);
       renderReading(level);
@@ -2005,6 +2360,7 @@
       inputs.genderGap.value = scenario.genderGap;
       inputs.precarity.value = scenario.precarity;
 
+      matrixFilter = null;
       updateResult();
     }
 
@@ -2017,6 +2373,14 @@
 
     $("#reset-btn").addEventListener("click", () => {
       applyScenario(scenarios.reset);
+    });
+
+    trafficBulbs.forEach((button) => {
+      button.addEventListener("click", () => {
+        const selectedLevel = button.dataset.filterLevel;
+        matrixFilter = matrixFilter === selectedLevel ? null : selectedLevel;
+        updateResult();
+      });
     });
 
     matrixDeep.addEventListener("click", (event) => {
